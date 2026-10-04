@@ -1,0 +1,29 @@
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip
+        run: |
+          unzip -o *.zip -d temp
+          INNER=$(ls -1 temp | head -n 1)
+          if [ -d "temp/$INNER" ] && [ -f "temp/$INNER/pubspec.yaml" ]; then
+            mv temp/"$INNER"/*.
+            mv temp/"$INNER"/.*. 2>/dev/null || true
+          else
+            mv temp/*.
+            mv temp/.*. 2>/dev/null || true
+          fi
+          rm -rf temp *.zip
+          ls -la
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Suplink-APK
+          path: build/app/outputs/flutter-apk/app-debug.apk

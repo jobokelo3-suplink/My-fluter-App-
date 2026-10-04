@@ -11,7 +11,7 @@ jobs:
           unzip -o "$ZIP" -d temp
           ROOT=$(find temp -name "pubspec.yaml" | head -n 1 | xargs dirname)
           echo "ROOT is $ROOT"
-          rsync -a "$ROOT"/./
+          rsync -a "$ROOT"/ ./
           rm -rf temp "$ZIP"
           ls -la
       - uses: subosito/flutter-action@v2

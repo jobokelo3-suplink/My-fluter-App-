@@ -7,15 +7,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Unzip project
         run: |
-          ZIP="$(ls *.zip | head -n 1)"
+          ZIP=$(ls *.zip | head -n 1)
           echo "Found $ZIP"
           unzip -o "$ZIP" -d temp
-          INNER=$(ls -1 temp | head -n 1)
-          if [ -f "temp/$INNER/pubspec.yaml" ]; then ROOT="temp/$INNER"; else ROOT="temp"; fi
+          if [ -f "temp/pubspec.yaml" ]; then ROOT="temp"; else INNER=$(ls -1 temp | head -n 1); ROOT="temp/$INNER"; fi
+          echo "Root is $ROOT"
+          ls -la "$ROOT"
+          shopt -s dotglob
           cp -r "$ROOT"/*.
-          cp -r "$ROOT"/.*. 2>/dev/null || true
           rm -rf temp "$ZIP"
-          ls -la
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
